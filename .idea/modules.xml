@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/LearnSpark.iml" filepath="$PROJECT_DIR$/.idea/LearnSpark.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/LearnPyData.iml" filepath="$PROJECT_DIR$/.idea/LearnPyData.iml" />
     </modules>
   </component>
 </project>
