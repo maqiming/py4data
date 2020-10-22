@@ -18,7 +18,6 @@ export HBASE_HOME=/usr/local/hbase
 export PATH=$HBASE_HOME/bin:$PATH
 ```
 
-
 #### 3.1 Hive 安装
 ```Shell
 https://mirrors.tuna.tsinghua.edu.cn/apache/hive/hive-2.3.7/apache-hive-2.3.7-bin.tar.gz
@@ -35,7 +34,6 @@ export HCAT_HOME=$HIVE_HOME/hcatalog
 export PATH=$HIVE_HOME/bin:$PATH
 ```
 
-
 #### 4.1 Kylin 安装
 ```Shell
 wget https://mirrors.tuna.tsinghua.edu.cn/apache/kylin/apache-kylin-3.1.1/apache-kylin-3.1.1-bin-hbase1x.tar.gz
@@ -50,4 +48,8 @@ export KYLIN_HOME=/usr/local/kylin
 export PATH=$KYLIN_HOME/bin:$PATH
 ```
 
+#### 5 测试
+```shell script
+/usr/local/kylin/bin/check-env.sh
+```
 

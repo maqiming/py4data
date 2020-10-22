@@ -56,6 +56,70 @@ tar -zxvf hadoop-2.7.7.tar.gz -C /usr/local/
 export HADOOP_HOME=usr/local/hadoop
 export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
 ```
+core-site.xml
+```XML
+<configuration>
+    <property>
+        <name>fs.default.name</name>
+        <value>hdfs://localhost:9000</value>
+    </property>
+    <property>
+        <name>hadoop.tmp.dir</name>
+        <value>/var/hadoop/hadoop-\${user.name}</value>
+    </property>
+</configuration>
+```
+
+hdfs-site.xml
+```xml
+<configuration>
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+    </property>
+</configuration>
+```
+
+mapred-site.xml
+```xml
+<configuration>
+    <property>
+        <name>mapreduce.jobhistory.address</name>
+        <value>localhost:10020</value>
+    </property>
+    <!-- 配置web端口 -->
+    <property>
+        <name>mapreduce.jobhistory.webapp.address</name>
+        <value>localhost:19888</value>
+    </property>
+    <!-- 配置正在运行中的日志在hdfs上的存放路径 -->
+    <property>
+        <name>mapreduce.jobhistory.intermediate-done-dir</name>
+        <value>/history/done_intermediate</value>
+    </property>
+    <!-- 配置运行过的日志存放在hdfs上的存放路径 -->
+    <property>
+        <name>mapreduce.jobhistory.done-dir</name>
+        <value>/history/done</value>
+    </property>
+</configuration>
+```
+
+yarn-site.xml
+```xml
+<configuration>
+    <property>
+        <name>yarn.log-aggregation-enable</name>
+        <value>true</value>
+    </property>
+</configuration>
+```
+
+#### 4.3 Hadoop启动停止
+```shell script
+/usr/local/hadoop/sbin/start-all.sh
+/usr/local/hadoop/sbin/stop-all.sh
+```
 
 #### 5.1 Spark安装
 ```
