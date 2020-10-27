@@ -1,21 +1,6 @@
-import time
-
-import datetime
-
-
-import findspark
-findspark.init()
-
-
 import os
 import sys
-
-par_dir = os.path.dirname(os.path.abspath(__file__))
-os.chdir(par_dir)
-
-sys.path.append("/home/maqiming/qyt_report")
-
-from koala import prdk
+import datetime
 import numpy as np
 
 import pyspark
@@ -26,21 +11,22 @@ from pyspark.ml.linalg import Vectors
 from pyspark.sql.functions import countDistinct, sum
 from pyspark.sql.types import *
 
-cache_dir='/home/maqiming/qyting/qyt_cache_dir/cache_dyy_cres/'
+cache_dir='/home/'
 
-goods_cache=cache_dir+'cres_customer_goods_20200929.csv'
-stock_cache=cache_dir+'cres_org_store_20200929.csv'
+goods_cache=cache_dir+'data_goods.csv'
+stock_cache=cache_dir+'data_stock.csv'
 
-
+import findspark
+findspark.init()
 
 def test_pyspark():
     start=datetime.datetime.now()
 
     spark=SparkSession.builder.config("spark.default.parallelism", 3000).appName("taSpark").getOrCreate()
     df_stock = spark.read.csv(stock_cache,header=True)
-    df2=df_stock.groupBy(['customer_id','erporg_id']).agg(
-        sum("stock_num").alias("求和"),
-        countDistinct("erp_goods_code").alias("去重计数")
+    df2=df_stock.groupBy(['城市','客户']).agg(
+        sum("库存").alias("求和"),
+        countDistinct("商品编码").alias("去重计数")
     )
     df2.show(truncate=False)
     end = datetime.datetime.now()
@@ -51,8 +37,8 @@ def test_pandas():
 
     import pandas as pd
     df_stock=pd.read_csv(stock_cache)
-    df2=df_stock.groupby(['customer_id','erporg_id']).agg({'stock_num':np.sum,'erp_goods_code':pd.Series.nunique}).reset_index()
-    df2.rename(columns={'stock_num':'求和','erp_goods_code':'去重计数'},inplace=True)
+    df2=df_stock.groupby(['城市','客户']).agg({'库存':np.sum,'商品编码':pd.Series.nunique}).reset_index()
+    df2.rename(columns={'库存':'求和','商品编码':'去重计数'},inplace=True)
     print(df2.head())
 
     end = datetime.datetime.now()
@@ -63,8 +49,8 @@ def test_modin():
     import modin.pandas as pd
 
     df_stock=pd.read_csv(stock_cache)
-    df2=df_stock.groupby(['customer_id','erporg_id']).agg({'stock_num':np.sum,'erp_goods_code':pd.Series.nunique}).reset_index()
-    df2.rename(columns={'stock_num':'求和','erp_goods_code':'去重计数'},inplace=True)
+    df2=df_stock.groupby(['城市','客户']).agg({'库存':np.sum,'商品编码':pd.Series.nunique}).reset_index()
+    df2.rename(columns={'库存':'求和','商品编码':'去重计数'},inplace=True)
     print(df2.head())
     end = datetime.datetime.now()
     print('\n\n Modin   运行时长     '+str(end-start)+'\n\n')
@@ -79,11 +65,11 @@ def test_pyspark_join():
     spark=SparkSession.builder.config("spark.default.parallelism", 3000).appName("taSpark").getOrCreate()
     df_good = spark.read.csv(goods_cache,header=True)
     df_stock = spark.read.csv(stock_cache,header=True)
-    df=df_stock.join(df_good,['customer_id','erp_goods_code'],'left')
+    df=df_stock.join(df_good,['城市','商品编码'],'left')
 
-    df2=df.groupBy(['customer_id','erporg_id']).agg(
-        sum("stock_num").alias("求和"),
-        countDistinct("standard_code").alias("去重计数")
+    df2=df.groupBy(['城市','客户']).agg(
+        sum("库存").alias("求和"),
+        countDistinct("商品编码").alias("去重计数")
     )
     df2.show(truncate=False)
     end = datetime.datetime.now()
@@ -97,10 +83,10 @@ def test_pandas_join():
     df_stock=pd.read_csv(stock_cache)
     df_goods=pd.read_csv(goods_cache)
 
-    df=pd.merge(df_stock,df_goods,on=['customer_id','erp_goods_code'],how='left')
+    df=pd.merge(df_stock,df_goods,on=['城市','商品编码'],how='left')
 
-    df2=df.groupby(['customer_id','erporg_id']).agg({'stock_num':np.sum,'standard_code':pd.Series.nunique}).reset_index()
-    df2.rename(columns={'stock_num':'求和','standard_code':'去重计数'},inplace=True)
+    df2=df.groupby(['城市','客户']).agg({'库存':np.sum,'商品编码':pd.Series.nunique}).reset_index()
+    df2.rename(columns={'库存':'求和','商品编码':'去重计数'},inplace=True)
     print(df2.head())
 
     end = datetime.datetime.now()
@@ -116,10 +102,10 @@ def test_modin_join():
 
     df_stock=pd.read_csv(stock_cache)
     df_goods=pd.read_csv(goods_cache)
-    df=pd.merge(df_stock,df_goods,on=['customer_id','erp_goods_code'],how='left')
+    df=pd.merge(df_stock,df_goods,on=['城市','商品编码'],how='left')
 
-    df2=df.groupby(['customer_id','erporg_id']).agg({'stock_num':np.sum,'standard_code':pd.Series.nunique}).reset_index()
-    df2.rename(columns={'stock_num':'求和','standard_code':'去重计数'},inplace=True)
+    df2=df.groupby(['城市','客户']).agg({'库存':np.sum,'商品编码':pd.Series.nunique}).reset_index()
+    df2.rename(columns={'库存':'求和','商品编码':'去重计数'},inplace=True)
     print(df2.head())
     end = datetime.datetime.now()
     print('\n\n Modin   运行时长     '+str(end-start)+'\n\n')
