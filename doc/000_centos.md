@@ -1,5 +1,12 @@
 # CentOS 基础配置
 
+#### 0 如果新机器非硬件原因无网络
+查看网卡
+```shell script
+ip addr
+vi /etc/sysconfig/network-scripts/ifcfg-网卡名
+修改 ONBOOT=no 为 ONBOOT=yes
+```
 #### 1.1 安装ifconfig
 ```shell script
 yum search ifconfig

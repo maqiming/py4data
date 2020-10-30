@@ -12,6 +12,7 @@ make && make install
 
 #### 1.2 python3配置
 ```shell script
+export PATH=$PATH:/usr/local/python3/bin
 ln -s /usr/local/python3/bin/python3.7 /usr/bin/python3
 ln -s /usr/local/python3/bin/pip3.7 /usr/bin/pip3
 ```
